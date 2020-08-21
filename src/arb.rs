@@ -1,3 +1,6 @@
+#[cfg(not(feature = "std"))]
+use core as std;
+
 use std::convert::TryFrom;
 
 use multihash::Multihash;

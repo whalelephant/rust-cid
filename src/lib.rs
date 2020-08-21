@@ -1,8 +1,10 @@
 //! # cid
 //!
 //! Implementation of [cid](https://github.com/ipld/cid) in Rust.
-
+#![cfg_attr(not(feature = "std"), no_std)]
 #![deny(missing_docs)]
+
+extern crate alloc;
 
 mod cid;
 mod codec;

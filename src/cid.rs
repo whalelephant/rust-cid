@@ -1,4 +1,12 @@
-use std::convert::TryFrom;
+#[cfg(not(feature = "std"))]
+use core as std;
+
+use alloc::{
+    borrow::ToOwned,
+    string::{String, ToString},
+    vec::Vec,
+};
+use std::{convert::TryFrom, fmt, hash, str};
 
 use multibase::{encode as base_encode, Base};
 use multihash::{Code, MultihashGeneric, MultihashRefGeneric};
@@ -145,22 +153,22 @@ where
 }
 
 #[allow(clippy::derive_hash_xor_eq)]
-impl<C, H> std::hash::Hash for CidGeneric<C, H>
+impl<C, H> hash::Hash for CidGeneric<C, H>
 where
     C: Into<u64> + TryFrom<u64> + Copy,
     H: Into<u64> + TryFrom<u64> + Copy,
 {
-    fn hash<T: std::hash::Hasher>(&self, state: &mut T) {
+    fn hash<T: hash::Hasher>(&self, state: &mut T) {
         self.to_bytes().hash(state);
     }
 }
 
-impl<C, H> std::fmt::Display for CidGeneric<C, H>
+impl<C, H> fmt::Display for CidGeneric<C, H>
 where
     C: Into<u64> + TryFrom<u64> + Copy,
     H: Into<u64> + TryFrom<u64> + Copy,
 {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let output = match self.version {
             Version::V0 => self.to_string_v0(),
             Version::V1 => self.to_string_v1(),
@@ -169,7 +177,7 @@ where
     }
 }
 
-impl<C, H> std::str::FromStr for CidGeneric<C, H>
+impl<C, H> str::FromStr for CidGeneric<C, H>
 where
     C: Into<u64> + TryFrom<u64> + Copy,
     H: Into<u64> + TryFrom<u64> + Copy,
